@@ -1,6 +1,7 @@
 package pt.unl.fct.iadi.bookstore.controller
 
 
+import org.springframework.context.MessageSource
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import pt.unl.fct.iadi.bookstore.service.ErrorResponse
@@ -12,7 +13,7 @@ import pt.unl.fct.iadi.bookstore.service.BookNotFoundException
 import java.util.Locale
 
 @RestControllerAdvice
-class GlobalExceptionHandler {
+class GlobalExceptionHandler(private val messageSource: MessageSource) {
 
     //if @valid fails
     @ExceptionHandler(MethodArgumentNotValidException::class)
@@ -23,10 +24,9 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BookNotFoundException::class)
-    fun handleBookNotFound(ex: BookNotFoundException, locale: Locale):
-            ResponseEntity<String> {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-            .body("NOT FOUND")
+    fun handleBookNotFound(ex: BookNotFoundException, locale: Locale): ResponseEntity<String> {
+        val message = messageSource.getMessage("error.book.notfound", null, locale)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message)
     }
 
 
