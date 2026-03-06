@@ -33,4 +33,8 @@ class BookstoreController(
     override fun listBooks(): ResponseEntity<List<GetBookResponse>> {
         return ResponseEntity.ok(service.listBooks())
     }
+
+    override fun getBook(isbn: String): ResponseEntity<GetBookResponse> {
+        return ResponseEntity.ok(GetBookResponse.fromBook(service.getBook(isbn)))
+    }
 }

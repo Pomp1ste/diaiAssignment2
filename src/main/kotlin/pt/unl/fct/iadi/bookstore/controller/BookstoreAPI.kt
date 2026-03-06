@@ -31,9 +31,9 @@ interface BookstoreAPI {
             )],
             content = [Content(schema = Schema(hidden = true))]),
         ApiResponse(responseCode = "400", description = "Validation error",
-            content = [Content(schema = Schema(implementation = ErrorResponse::class))]),
+            content = [Content(schema = Schema(implementation = MethodArgumentNotValidException::class))]),
         ApiResponse(responseCode = "409", description = "Book with this ISBN already exists",
-            content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+            content = [Content(schema = Schema(implementation = AlreadyExists::class))])
     )
     @RequestMapping(
         value = ["/addBook"],
@@ -70,8 +70,6 @@ interface BookstoreAPI {
         consumes = ["application/json"],
         method = [RequestMethod.GET]
     )
-    fun getBook(@PathVariable isbn: Long, @Valid @RequestBody request: GetBookRequest): ResponseEntity<Unit> {
-        var book = GetBookRequest.toBook()
-    }
+    fun getBook(@PathVariable isbn: String): ResponseEntity<GetBookResponse>
 
 }
