@@ -12,7 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import pt.unl.fct.iadi.bookstore.controller.dto.CreateBookRequest
+import pt.unl.fct.iadi.bookstore.controller.dto.GetBookRequest
+import pt.unl.fct.iadi.bookstore.controller.dto.GetBookResponse
+import pt.unl.fct.iadi.bookstore.domain.Book
+import pt.unl.fct.iadi.bookstore.service.AlreadyExists
+import pt.unl.fct.iadi.bookstore.service.BookNotFoundException
 
 
 interface BookstoreAPI {
@@ -30,7 +36,7 @@ interface BookstoreAPI {
             content = [Content(schema = Schema(implementation = ErrorResponse::class))])
     )
     @RequestMapping(
-        value = ["/books"],
+        value = ["/addBook"],
         consumes = ["application/json"],
         method = [RequestMethod.POST]
     )
@@ -38,20 +44,34 @@ interface BookstoreAPI {
 
     //#####################################################
 
+    @Operation(summary = "List all books", operationId = "listBooks")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "List of all books")
+    )
+    @RequestMapping(
+        value = ["/books"],
+        produces = ["application/json"],
+        method = [RequestMethod.GET]
+    )
+    fun listBooks(): ResponseEntity<List<GetBookResponse>>
+
+    //#####################################################
+
     @Operation(summary = "Get a single book", operationId = "singleBook")
     @ApiResponses(
         ApiResponse(responseCode = "400", description = "Validation error",
-            content = [Content(schema = Schema(implementation = ErrorResponse::class))]),
-        ApiResponse(responseCode = "200", description = "Book fetched",
-            content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+            content = [Content(schema = Schema(implementation = MethodArgumentNotValidException::class))]),
+        ApiResponse(responseCode = "404", description = "Book not found",
+            content = [Content(schema = Schema(implementation = BookNotFoundException::class))]),
+        ApiResponse(responseCode = "200", description = "Book fetched")
     )
     @RequestMapping(
-        value = ["/books/{id}"],
+        value = ["/books/{isbn}"],
         consumes = ["application/json"],
         method = [RequestMethod.GET]
     )
-    fun getBook(@PathVariable id: Long, @Valid @RequestBody request: CreateBookRequest): ResponseEntity<Unit> {
-        var i = id
+    fun getBook(@PathVariable isbn: Long, @Valid @RequestBody request: GetBookRequest): ResponseEntity<Unit> {
+        var book = GetBookRequest.toBook()
     }
 
 }
