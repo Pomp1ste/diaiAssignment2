@@ -36,7 +36,7 @@ interface BookstoreAPI {
             content = [Content(schema = Schema(implementation = AlreadyExists::class))])
     )
     @RequestMapping(
-        value = ["/addBook"],
+        value = ["/books"],
         consumes = ["application/json"],
         method = [RequestMethod.POST]
     )
