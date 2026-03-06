@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size
 import pt.unl.fct.iadi.bookstore.domain.Book
 
 data class ReplaceBookRequest (
-    @field:_root_ide_package_.jakarta.validation.constraints.NotBlank
+    @field:NotBlank
     val isbn: String,
     @field:NotBlank
     val title: String,
