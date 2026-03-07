@@ -62,11 +62,12 @@ interface BookstoreAPI {
             content = [Content(schema = Schema(implementation = MethodArgumentNotValidException::class))]),
         ApiResponse(responseCode = "404", description = "Book not found",
             content = [Content(schema = Schema(implementation = BookNotFoundException::class))]),
-        ApiResponse(responseCode = "200", description = "Book fetched")
+        ApiResponse(responseCode = "200", description = "Book fetched",
+            content = [Content(mediaType = "application/json", schema = Schema(implementation = GetBookResponse::class))])
     )
     @RequestMapping(
         value = ["/books/{isbn}"],
-        consumes = ["application/json"],
+        produces = ["application/json"],
         method = [RequestMethod.GET]
     )
     fun getBook(@PathVariable isbn: String): ResponseEntity<GetBookResponse>
@@ -95,6 +96,6 @@ interface BookstoreAPI {
         consumes = ["application/json"],
         method = [RequestMethod.PUT]
     )
-    fun replaceBook(@Valid @RequestBody request: CreateBookRequest): ResponseEntity<Unit>
+    fun putBook(@Valid @RequestBody request: CreateBookRequest): ResponseEntity<Unit>
 
 }

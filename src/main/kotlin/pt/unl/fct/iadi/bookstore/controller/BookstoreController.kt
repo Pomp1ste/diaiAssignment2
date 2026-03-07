@@ -39,7 +39,7 @@ class BookstoreController(
         return ResponseEntity.ok(GetBookResponse.fromBook(service.getBook(isbn)))
     }
 
-    override fun replaceBook(request: CreateBookRequest): ResponseEntity<Unit> {
+    override fun putBook(request: CreateBookRequest): ResponseEntity<Unit> {
         val (book, created) = service.putBook(request.toBook())
         val requestId = httpRequest.getHeader("X-Request-Id")
         return if (created) {

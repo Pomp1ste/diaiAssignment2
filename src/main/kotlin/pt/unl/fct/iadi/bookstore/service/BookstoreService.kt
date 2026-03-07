@@ -1,5 +1,6 @@
 package pt.unl.fct.iadi.bookstore.service
 
+import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.constraints.NotBlank
 import org.springframework.stereotype.Component
 import pt.unl.fct.iadi.bookstore.controller.dto.GetBookResponse
@@ -31,7 +32,7 @@ class BookstoreService {
         }
     }
 
-    fun putBook(book: Book): Pair<Book, Boolean> {
+    fun putBook(@NotBlank book: Book): Pair<Book, Boolean> {
         val created = !books.containsKey(book.isbn)
         books[book.isbn] = book
         return Pair(book, created)
