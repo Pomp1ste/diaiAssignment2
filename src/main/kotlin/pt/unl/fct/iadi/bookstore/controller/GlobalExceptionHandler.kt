@@ -24,9 +24,9 @@ class GlobalExceptionHandler(private val messageSource: MessageSource) {
     }
 
     @ExceptionHandler(BookNotFoundException::class)
-    fun handleBookNotFound(ex: BookNotFoundException, locale: Locale): ResponseEntity<String> {
+    fun handleBookNotFound(ex: BookNotFoundException, locale: Locale): ResponseEntity<ErrorResponse> {
         val message = messageSource.getMessage("error.book.notfound", null, locale)
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse("NOT_FOUND", message))
     }
 
 

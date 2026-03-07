@@ -19,5 +19,13 @@ data class ReplaceBookRequest (
     @field:NotBlank
     val image: String
 ) {
-
+    fun toBook(): Book {
+        return Book(
+            isbn = isbn,
+            title = title,
+            author = author,
+            price = price,
+            image = image
+        )
+    }
 }

@@ -31,7 +31,11 @@ class BookstoreService {
         }
     }
 
-
+    fun putBook(book: Book): Pair<Book, Boolean> {
+        val created = !books.containsKey(book.isbn)
+        books[book.isbn] = book
+        return Pair(book, created)
+    }
 
 
 }

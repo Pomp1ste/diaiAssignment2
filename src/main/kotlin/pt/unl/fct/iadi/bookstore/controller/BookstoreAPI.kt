@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import pt.unl.fct.iadi.bookstore.controller.dto.CreateBookRequest
-import pt.unl.fct.iadi.bookstore.controller.dto.GetBookRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.GetBookResponse
 import pt.unl.fct.iadi.bookstore.domain.Book
 import pt.unl.fct.iadi.bookstore.service.AlreadyExists
@@ -71,5 +70,31 @@ interface BookstoreAPI {
         method = [RequestMethod.GET]
     )
     fun getBook(@PathVariable isbn: String): ResponseEntity<GetBookResponse>
+
+    //#####################################################
+
+    @Operation(summary = "Replace a book", operationId = "replaceBook")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "Book replaced",
+            headers = [Header(
+                name = "Location", description = "URI of the replaced book",
+                schema = Schema(type = "string", format = "uri")
+            )],
+            content = [Content(schema = Schema(hidden = true))]),
+        ApiResponse(responseCode = "201", description = "Book created",
+            headers = [Header(
+                name = "Location", description = "URI of the created book",
+                schema = Schema(type = "string", format = "uri")
+            )],
+            content = [Content(schema = Schema(hidden = true))]),
+        ApiResponse(responseCode = "400", description = "Validation error",
+            content = [Content(schema = Schema(implementation = MethodArgumentNotValidException::class))]),
+    )
+    @RequestMapping(
+        value = ["/books/{isbn}"],
+        consumes = ["application/json"],
+        method = [RequestMethod.PUT]
+    )
+    fun replaceBook(@Valid @RequestBody request: CreateBookRequest): ResponseEntity<Unit>
 
 }
