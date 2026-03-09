@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import pt.unl.fct.iadi.bookstore.controller.dto.CreateBookRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.GetBookResponse
+import pt.unl.fct.iadi.bookstore.controller.dto.PartialUpdateRequest
+import pt.unl.fct.iadi.bookstore.controller.dto.ReviewResponse
 import pt.unl.fct.iadi.bookstore.domain.Book
 import pt.unl.fct.iadi.bookstore.service.AlreadyExists
 import pt.unl.fct.iadi.bookstore.service.BookNotFoundException
@@ -96,6 +98,63 @@ interface BookstoreAPI {
         consumes = ["application/json"],
         method = [RequestMethod.PUT]
     )
-    fun putBook(@Valid @RequestBody request: CreateBookRequest): ResponseEntity<Unit>
+    fun putBook(@PathVariable isbn: String, @Valid @RequestBody request: CreateBookRequest): ResponseEntity<Unit>
 
+
+    //#####################################################
+
+    @Operation(summary = "Partially update a book", operationId = "PartialUpdateBook")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "Book updated",
+            headers = [Header(
+                name = "Location", description = "URI of the updated book",
+                schema = Schema(type = "string", format = "uri")
+            )],
+            content = [Content(schema = Schema(hidden = true))]),
+        ApiResponse(responseCode = "400", description = "Validation error",
+            content = [Content(schema = Schema(implementation = MethodArgumentNotValidException::class))]),
+        ApiResponse(responseCode = "404", description = "Book not found",
+            content = [Content(schema = Schema(implementation = BookNotFoundException::class))])
+    )
+    @RequestMapping(
+        value = ["/books/{isbn}"],
+        consumes = ["application/json"],
+        method = [RequestMethod.PATCH]
+    )
+    fun updateBook(@PathVariable isbn: String, @Valid @RequestBody request: PartialUpdateRequest): ResponseEntity<Unit>
+
+    //#####################################################
+
+    @Operation(summary = "Partially update a book", operationId = "PartialUpdateBook")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "Book deleted",
+            headers = [Header(
+                name = "Location", description = "URI of the updated book",
+                schema = Schema(type = "string", format = "uri")
+            )],
+            content = [Content(schema = Schema(hidden = true))]),
+        ApiResponse(responseCode = "400", description = "Validation error",
+            content = [Content(schema = Schema(implementation = MethodArgumentNotValidException::class))]),
+        ApiResponse(responseCode = "404", description = "Book not found",
+            content = [Content(schema = Schema(implementation = BookNotFoundException::class))])
+    )
+    @RequestMapping(
+        value = ["/books"],
+        consumes = ["application/json"],
+        method = [RequestMethod.DELETE]
+    )
+    fun deleteBook(@RequestBody isbn: String): ResponseEntity<Unit>
+
+    //#####################################################
+
+    @Operation(summary = "List all reviews", operationId = "listReviews")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "List of all books")
+    )
+    @RequestMapping(
+        value = ["/reviews"],
+        produces = ["application/json"],
+        method = [RequestMethod.GET]
+    )
+    fun listReviews(): ResponseEntity<List<ReviewResponse>>
 }

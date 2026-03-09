@@ -9,6 +9,8 @@ import pt.unl.fct.iadi.bookstore.domain.Book
 import pt.unl.fct.iadi.bookstore.service.BookstoreService
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import pt.unl.fct.iadi.bookstore.controller.dto.PartialUpdateRequest
+import pt.unl.fct.iadi.bookstore.controller.dto.ReviewResponse
 
 @RestController
 class BookstoreController(
@@ -39,8 +41,8 @@ class BookstoreController(
         return ResponseEntity.ok(GetBookResponse.fromBook(service.getBook(isbn)))
     }
 
-    override fun putBook(request: CreateBookRequest): ResponseEntity<Unit> {
-        val (book, created) = service.putBook(request.toBook())
+    override fun putBook(isbn: String, request: CreateBookRequest): ResponseEntity<Unit> {
+        val (book, created) = service.putBook(isbn = isbn, book =request.toBook())
         val requestId = httpRequest.getHeader("X-Request-Id")
         return if (created) {
             val location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -54,4 +56,18 @@ class BookstoreController(
             ResponseEntity.ok().build()
         }
     }
+
+    override fun updateBook(isbn: String, request: PartialUpdateRequest): ResponseEntity<Unit> {
+        return ResponseEntity.ok(service.updateBook(isbn = isbn, request))
+    }
+
+    override fun deleteBook(isbn: String): ResponseEntity<Unit> {
+        return ResponseEntity.ok(service.deleteBook(isbn))
+    }
+
+    override fun listReviews(): ResponseEntity<List<ReviewResponse>> {
+        return ResponseEntity.ok(service.listReviews())
+    }
+
+
 }
