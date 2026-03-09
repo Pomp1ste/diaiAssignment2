@@ -2,6 +2,7 @@ package pt.unl.fct.iadi.bookstore.service
 
 import jakarta.validation.constraints.NotBlank
 import org.springframework.stereotype.Component
+import org.springframework.web.bind.annotation.PathVariable
 import pt.unl.fct.iadi.bookstore.controller.dto.CreateReviewRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.GetBookResponse
 import pt.unl.fct.iadi.bookstore.controller.dto.PartialUpdateRequest
@@ -62,7 +63,7 @@ class BookstoreService {
         reviews.getOrPut(review.isbn) { mutableListOf() }.add(review.toReview())
     }
 
-    fun listReviews(): List<ReviewResponse> =
-        reviews.values.flatten().map { ReviewResponse.fromReview(it)}
+    fun listReviews(isbn: String): List<ReviewResponse> =
+        reviews[isbn]?.map { ReviewResponse.fromReview(it) } ?: throw ReviewNotFoundException
 
 }

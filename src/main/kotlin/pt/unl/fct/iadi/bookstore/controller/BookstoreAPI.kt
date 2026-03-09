@@ -20,6 +20,7 @@ import pt.unl.fct.iadi.bookstore.controller.dto.ReviewResponse
 import pt.unl.fct.iadi.bookstore.domain.Book
 import pt.unl.fct.iadi.bookstore.service.AlreadyExists
 import pt.unl.fct.iadi.bookstore.service.BookNotFoundException
+import pt.unl.fct.iadi.bookstore.service.ReviewNotFoundException
 
 
 interface BookstoreAPI {
@@ -149,12 +150,16 @@ interface BookstoreAPI {
 
     @Operation(summary = "List all reviews", operationId = "listReviews")
     @ApiResponses(
-        ApiResponse(responseCode = "200", description = "List of all books")
-    )
+        ApiResponse(responseCode = "200", description = "List of all reviews"),
+
+        ApiResponse(responseCode = "404", description = "Review not found",
+            content = [Content(schema = Schema(implementation = ReviewNotFoundException::class))])
+            )
+
     @RequestMapping(
-        value = ["/reviews"],
+        value = ["/reviews/{isbn}"],
         produces = ["application/json"],
         method = [RequestMethod.GET]
     )
-    fun listReviews(): ResponseEntity<List<ReviewResponse>>
+    fun listReviews(@PathVariable isbn: String): ResponseEntity<List<ReviewResponse>>
 }

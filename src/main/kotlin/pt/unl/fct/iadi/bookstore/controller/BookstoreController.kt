@@ -65,8 +65,8 @@ class BookstoreController(
         return ResponseEntity.ok(service.deleteBook(isbn))
     }
 
-    override fun listReviews(): ResponseEntity<List<ReviewResponse>> {
-        return ResponseEntity.ok(service.listReviews())
+    override fun listReviews(isbn: String): ResponseEntity<List<ReviewResponse>> {
+        return ResponseEntity.ok(service.listReviews(isbn))
     }
 
 
