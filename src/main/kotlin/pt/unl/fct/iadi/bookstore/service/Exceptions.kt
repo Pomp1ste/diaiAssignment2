@@ -9,4 +9,6 @@ object AlreadyExists : RuntimeException("Book already exists") {
     private fun readResolve(): Any = AlreadyExists
 }
 
-object ReviewNotFoundException : RuntimeException("Review not found") {}
+object ReviewNotFoundException : RuntimeException("Review not found") {
+    private fun readResolve(): Any = ReviewNotFoundException
+}

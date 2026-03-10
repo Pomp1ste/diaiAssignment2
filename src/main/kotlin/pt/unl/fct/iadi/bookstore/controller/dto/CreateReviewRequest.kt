@@ -1,7 +1,11 @@
 package pt.unl.fct.iadi.bookstore.controller.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Size
 import pt.unl.fct.iadi.bookstore.domain.Review
 import java.util.UUID
 
@@ -11,10 +15,12 @@ data class CreateReviewRequest(
     val isbn: String,
 
     @field:Schema(description = "rating given")
-    @field:NotBlank
+    @field:Min(1)
+    @field:Max(5)
     val rating: Int,
 
     @field:Schema(description = "comment")
+    @field:Size(max = 500)
     val comment: String
 ) {
     fun toReview(): Review {

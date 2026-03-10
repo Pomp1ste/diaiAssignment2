@@ -8,7 +8,9 @@ import pt.unl.fct.iadi.bookstore.service.ErrorResponse
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import pt.unl.fct.iadi.bookstore.service.AlreadyExists
 import pt.unl.fct.iadi.bookstore.service.BookNotFoundException
+import pt.unl.fct.iadi.bookstore.service.ReviewNotFoundException
 
 import java.util.Locale
 
@@ -29,5 +31,15 @@ class GlobalExceptionHandler(private val messageSource: MessageSource) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse("NOT_FOUND", message))
     }
 
+    @ExceptionHandler(ReviewNotFoundException::class)
+    fun handleReviewNotFound(ex: ReviewNotFoundException, locale: Locale): ResponseEntity<ErrorResponse> {
+        val message = messageSource.getMessage("error.review.notfound", null, locale)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse("NOT_FOUND", message))
+    }
 
+    @ExceptionHandler(AlreadyExists::class)
+    fun handleAlreadyExists(ex: AlreadyExists, locale: Locale): ResponseEntity<ErrorResponse> {
+        val message = messageSource.getMessage("error.alreadyExists", null, locale)
+        return ResponseEntity.status(409).body(ErrorResponse("CONFLICT", message))
+    }
 }

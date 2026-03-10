@@ -22,7 +22,6 @@ data class CreateBookRequest (
     @field:Schema(description = "Author of the book")
     val author: String,
 
-    @field:NotBlank
     @field:Positive
     @field:Schema(description = "Price of the book")
     val price: Double,

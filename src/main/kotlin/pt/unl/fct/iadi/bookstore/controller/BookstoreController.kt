@@ -9,8 +9,11 @@ import pt.unl.fct.iadi.bookstore.domain.Book
 import pt.unl.fct.iadi.bookstore.service.BookstoreService
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import pt.unl.fct.iadi.bookstore.controller.dto.CreateReviewRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.PartialUpdateRequest
+import pt.unl.fct.iadi.bookstore.controller.dto.ReplaceReviewRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.ReviewResponse
+import java.util.UUID
 
 @RestController
 class BookstoreController(
@@ -69,5 +72,26 @@ class BookstoreController(
         return ResponseEntity.ok(service.listReviews(isbn))
     }
 
+    override fun createReview(request: CreateReviewRequest): ResponseEntity<Unit> {
 
+        val requestId = httpRequest.getHeader("X-Request-Id")
+        println("Incoming requestId: $requestId")
+        val rev = request.toReview()
+        service.createReview(isbn = request.isbn, review = rev)
+        val location = ServletUriComponentsBuilder.fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(rev.id)
+            .toUri()
+        return ResponseEntity
+            .created(location)
+            .header("X-Request-Id", requestId ?: requestId)
+            .build()
+    }
+
+    override fun replaceReview(
+        id: UUID,
+        request: ReplaceReviewRequest
+    ): ResponseEntity<Unit> {
+        return ResponseEntity.ok(service.replaceReview(request.isbn, request.toReview(id)))
+    }
 }

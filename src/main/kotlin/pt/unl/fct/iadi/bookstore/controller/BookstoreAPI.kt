@@ -14,13 +14,16 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import pt.unl.fct.iadi.bookstore.controller.dto.CreateBookRequest
+import pt.unl.fct.iadi.bookstore.controller.dto.CreateReviewRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.GetBookResponse
 import pt.unl.fct.iadi.bookstore.controller.dto.PartialUpdateRequest
+import pt.unl.fct.iadi.bookstore.controller.dto.ReplaceReviewRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.ReviewResponse
 import pt.unl.fct.iadi.bookstore.domain.Book
 import pt.unl.fct.iadi.bookstore.service.AlreadyExists
 import pt.unl.fct.iadi.bookstore.service.BookNotFoundException
 import pt.unl.fct.iadi.bookstore.service.ReviewNotFoundException
+import java.util.UUID
 
 
 interface BookstoreAPI {
@@ -162,4 +165,51 @@ interface BookstoreAPI {
         method = [RequestMethod.GET]
     )
     fun listReviews(@PathVariable isbn: String): ResponseEntity<List<ReviewResponse>>
+
+
+    //#####################################################
+
+    @Operation(summary = "Create a new review", operationId = "createReview")
+    @ApiResponses(
+        ApiResponse(responseCode = "201", description = "Review created",
+            headers = [Header(
+                name = "Location", description = "URI of the created book",
+                schema = Schema(type = "string", format = "uri")
+            )],
+            content = [Content(schema = Schema(hidden = true))]),
+        ApiResponse(responseCode = "400", description = "Validation error",
+            content = [Content(schema = Schema(implementation = MethodArgumentNotValidException::class))]),
+        ApiResponse(responseCode = "404", description = "There is no book registered to this isbn. Impossible to create review",
+            content = [Content(schema = Schema(implementation = BookNotFoundException::class))])
+    )
+    @RequestMapping(
+        value = ["/reviews"],
+        consumes = ["application/json"],
+        method = [RequestMethod.POST]
+    )
+    fun createReview(@Valid @RequestBody request: CreateReviewRequest): ResponseEntity<Unit>
+
+    //#####################################################
+
+    @Operation(summary = "Replace a review", operationId = "replaceReview")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "Review replaced",
+            headers = [Header(
+                name = "Location", description = "URI of the replaced review",
+                schema = Schema(type = "string", format = "uri")
+            )],
+            content = [Content(schema = Schema(hidden = true))]),
+
+        ApiResponse(responseCode = "400", description = "Validation error",
+            content = [Content(schema = Schema(implementation = MethodArgumentNotValidException::class))]),
+
+        ApiResponse(responseCode = "404", description = "There is no such review/book",
+            content = [Content(schema = Schema(implementation = ReviewNotFoundException::class))])
+    )
+    @RequestMapping(
+        value = ["/reviews/{id}"],
+        consumes = ["application/json"],
+        method = [RequestMethod.PUT]
+    )
+    fun replaceReview(@PathVariable id: UUID, @Valid @RequestBody request: ReplaceReviewRequest): ResponseEntity<Unit>
 }
