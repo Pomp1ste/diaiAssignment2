@@ -131,7 +131,7 @@ interface BookstoreAPI {
 
     @Operation(summary = "Delete a book", operationId = "DeleteBook")
     @ApiResponses(
-        ApiResponse(responseCode = "200", description = "Book deleted",
+        ApiResponse(responseCode = "204", description = "Book deleted",
             headers = [Header(
                 name = "Location", description = "URI of the updated book",
                 schema = Schema(type = "string", format = "uri")
@@ -218,7 +218,7 @@ interface BookstoreAPI {
 
     @Operation(summary = "Delete a review", operationId = "DeleteReview")
     @ApiResponses(
-        ApiResponse(responseCode = "200", description = "Review deleted",
+        ApiResponse(responseCode = "204", description = "Review deleted",
             headers = [Header(
                 name = "Location", description = "URI of the deleted review",
                 schema = Schema(type = "string", format = "uri")
@@ -230,9 +230,8 @@ interface BookstoreAPI {
             content = [Content(schema = Schema(implementation = ReviewNotFoundException::class))])
     )
     @RequestMapping(
-        value = ["/reviews"],
-        consumes = ["application/json"],
+        value = ["/reviews/{id}"],
         method = [RequestMethod.DELETE]
     )
-    fun deleteReview(@RequestBody reviewId: UUID): ResponseEntity<Unit>
+    fun deleteReview(@PathVariable id: UUID): ResponseEntity<Unit>
 }
