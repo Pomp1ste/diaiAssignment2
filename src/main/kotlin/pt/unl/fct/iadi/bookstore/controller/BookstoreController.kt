@@ -53,7 +53,7 @@ class BookstoreController(
                 .buildAndExpand(book.isbn)
                 .toUri()
             ResponseEntity.created(location)
-                .header("X-Request-Id", requestId ?: requestId)
+                .header("X-Request-Id", requestId ?: "")
                 .build()
         } else {
             ResponseEntity.ok().build()
@@ -84,7 +84,7 @@ class BookstoreController(
             .toUri()
         return ResponseEntity
             .created(location)
-            .header("X-Request-Id", requestId ?: requestId)
+            .header("X-Request-Id", requestId ?: "")
             .build()
     }
 

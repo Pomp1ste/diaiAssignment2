@@ -62,7 +62,7 @@ interface BookstoreAPI {
 
     //#####################################################
 
-    @Operation(summary = "Get a single book", operationId = "singleBook")
+    @Operation(summary = "Get a single book", operationId = "getBook")
     @ApiResponses(
         ApiResponse(responseCode = "400", description = "Validation error",
             content = [Content(schema = Schema(implementation = MethodArgumentNotValidException::class))]),
@@ -143,11 +143,10 @@ interface BookstoreAPI {
             content = [Content(schema = Schema(implementation = BookNotFoundException::class))])
     )
     @RequestMapping(
-        value = ["/books"],
-        consumes = ["application/json"],
+        value = ["/books/{isbn}"],
         method = [RequestMethod.DELETE]
     )
-    fun deleteBook(@RequestBody isbn: String): ResponseEntity<Unit>
+    fun deleteBook(@PathVariable isbn: String): ResponseEntity<Unit>
 
     //#####################################################
 
