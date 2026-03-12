@@ -94,4 +94,8 @@ class BookstoreController(
     ): ResponseEntity<Unit> {
         return ResponseEntity.ok(service.replaceReview(request.isbn, request.toReview(id)))
     }
+
+    override fun deleteReview(reviewId: UUID): ResponseEntity<Unit> {
+        return ResponseEntity.ok(service.deleteReview(reviewId))
+    }
 }

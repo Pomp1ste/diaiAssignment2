@@ -7,6 +7,7 @@ import pt.unl.fct.iadi.bookstore.controller.dto.PartialUpdateRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.ReviewResponse
 import pt.unl.fct.iadi.bookstore.domain.Book
 import pt.unl.fct.iadi.bookstore.domain.Review
+import java.util.UUID
 
 
 @Component
@@ -72,6 +73,18 @@ class BookstoreService {
         for (i in bookReviews.indices) {
             if (bookReviews[i].id == review.id) {
                 bookReviews[i] = review
+                return
+            }
+        }
+        throw ReviewNotFoundException
+    }
+
+    fun deleteReview(@NotBlank revId: UUID) {
+        val isbn = IdToIsbn[revId.toString()]
+        val bookReviews: MutableList<Review> = reviews[isbn] ?: throw BookNotFoundException
+        for (i in bookReviews.indices) {
+            if (bookReviews[i].id == revId) {
+                bookReviews.remove(bookReviews[i])
                 return
             }
         }

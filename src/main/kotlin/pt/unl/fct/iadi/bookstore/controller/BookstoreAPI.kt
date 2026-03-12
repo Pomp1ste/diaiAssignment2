@@ -129,7 +129,7 @@ interface BookstoreAPI {
 
     //#####################################################
 
-    @Operation(summary = "Partially update a book", operationId = "PartialUpdateBook")
+    @Operation(summary = "Delete a book", operationId = "DeleteBook")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "Book deleted",
             headers = [Header(
@@ -212,4 +212,28 @@ interface BookstoreAPI {
         method = [RequestMethod.PUT]
     )
     fun replaceReview(@PathVariable id: UUID, @Valid @RequestBody request: ReplaceReviewRequest): ResponseEntity<Unit>
+
+
+    //#####################################################
+
+
+    @Operation(summary = "Delete a review", operationId = "DeleteReview")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "Review deleted",
+            headers = [Header(
+                name = "Location", description = "URI of the deleted review",
+                schema = Schema(type = "string", format = "uri")
+            )],
+            content = [Content(schema = Schema(hidden = true))]),
+        ApiResponse(responseCode = "400", description = "Validation error",
+            content = [Content(schema = Schema(implementation = MethodArgumentNotValidException::class))]),
+        ApiResponse(responseCode = "404", description = "Review not found",
+            content = [Content(schema = Schema(implementation = ReviewNotFoundException::class))])
+    )
+    @RequestMapping(
+        value = ["/reviews"],
+        consumes = ["application/json"],
+        method = [RequestMethod.DELETE]
+    )
+    fun deleteReview(@RequestBody reviewId: UUID): ResponseEntity<Unit>
 }
