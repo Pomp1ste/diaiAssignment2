@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -25,7 +26,7 @@ import pt.unl.fct.iadi.bookstore.service.BookNotFoundException
 import pt.unl.fct.iadi.bookstore.service.ReviewNotFoundException
 import java.util.UUID
 
-
+@Tag(name = "Bookstore API", description = "Bookstore API")
 interface BookstoreAPI {
     @Operation(summary = "Create a new book", operationId = "createBook")
     @ApiResponses(
@@ -159,7 +160,7 @@ interface BookstoreAPI {
             )
 
     @RequestMapping(
-        value = ["/reviews/{isbn}"],
+        value = ["/books/{isbn}/reviews"],
         produces = ["application/json"],
         method = [RequestMethod.GET]
     )
@@ -182,11 +183,11 @@ interface BookstoreAPI {
             content = [Content(schema = Schema(implementation = BookNotFoundException::class))])
     )
     @RequestMapping(
-        value = ["/reviews"],
+        value = ["/books/{isbn}/reviews"],
         consumes = ["application/json"],
         method = [RequestMethod.POST]
     )
-    fun createReview(@Valid @RequestBody request: CreateReviewRequest): ResponseEntity<Unit>
+    fun createReview(@PathVariable isbn: String, @Valid @RequestBody request: CreateReviewRequest): ResponseEntity<Unit>
 
     //#####################################################
 
@@ -206,11 +207,11 @@ interface BookstoreAPI {
             content = [Content(schema = Schema(implementation = ReviewNotFoundException::class))])
     )
     @RequestMapping(
-        value = ["/reviews/{id}"],
+        value = ["/books/{isbn}/reviews/{reviewId}"],
         consumes = ["application/json"],
         method = [RequestMethod.PUT]
     )
-    fun replaceReview(@PathVariable id: UUID, @Valid @RequestBody request: ReplaceReviewRequest): ResponseEntity<Unit>
+    fun replaceReview(@PathVariable reviewId: UUID, @Valid @RequestBody request: ReplaceReviewRequest): ResponseEntity<Unit>
 
 
     //#####################################################
@@ -230,8 +231,8 @@ interface BookstoreAPI {
             content = [Content(schema = Schema(implementation = ReviewNotFoundException::class))])
     )
     @RequestMapping(
-        value = ["/reviews/{id}"],
+        value = ["/books/{isbn}/reviews/{reviewId}"],
         method = [RequestMethod.DELETE]
     )
-    fun deleteReview(@PathVariable id: UUID): ResponseEntity<Unit>
+    fun deleteReview(@PathVariable isbn: String, @PathVariable reviewId: UUID): ResponseEntity<Unit>
 }

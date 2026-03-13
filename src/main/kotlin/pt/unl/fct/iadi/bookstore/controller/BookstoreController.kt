@@ -72,7 +72,7 @@ class BookstoreController(
         return ResponseEntity.ok(service.listReviews(isbn))
     }
 
-    override fun createReview(request: CreateReviewRequest): ResponseEntity<Unit> {
+    override fun createReview(isbn: String, request: CreateReviewRequest): ResponseEntity<Unit> {
 
         val requestId = httpRequest.getHeader("X-Request-Id")
         println("Incoming requestId: $requestId")
@@ -95,7 +95,7 @@ class BookstoreController(
         return ResponseEntity.ok(service.replaceReview(request.isbn, request.toReview(id)))
     }
 
-    override fun deleteReview(id: UUID): ResponseEntity<Unit> {
-        return ResponseEntity.ok(service.deleteReview(id))
+    override fun deleteReview(isbn:String, reviewId: UUID): ResponseEntity<Unit> {
+        return ResponseEntity.ok(service.deleteReview(reviewId))
     }
 }

@@ -8,27 +8,19 @@ import jakarta.validation.constraints.Size
 
 
 data class GetBookResponse(
-    @field:NotBlank
     @field:Schema(description = "unique ISBN")
     val isbn: String,
 
-    @field:NotBlank
-    @field:Size(min = 1, max = 120)
     @field:Schema(description = "title of 120 letters max")
     val title: String,
 
-    @field:NotBlank
-    @field:Size(min = 1, max = 80)
     @field:Schema(description = "Author of the book")
     val author: String,
 
-    @field:NotBlank
-    @field:Positive
-    @field:Schema(description = "Price of the book")
+
+    @field:Schema(description = "Price of the book", minimum = "0")
     val price: Double,
 
-    @field:NotBlank
-    @field:Pattern(regexp = "^https://.*", message = "image must start with https://")
     @field:Schema(description = "URL")
     val image: String
 
