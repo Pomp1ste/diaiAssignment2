@@ -13,6 +13,8 @@ import pt.unl.fct.iadi.bookstore.controller.dto.CreateReviewRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.PartialUpdateRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.ReplaceReviewRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.ReviewResponse
+import pt.unl.fct.iadi.bookstore.controller.dto.UpdateReviewRequest
+import pt.unl.fct.iadi.bookstore.domain.Review
 import java.util.UUID
 
 @RestController
@@ -89,10 +91,20 @@ class BookstoreController(
     }
 
     override fun replaceReview(
-        id: UUID,
+        isbn: String,
+        reviewId: UUID,
         request: ReplaceReviewRequest
     ): ResponseEntity<Unit> {
-        return ResponseEntity.ok(service.replaceReview(request.isbn, request.toReview(id)))
+        return ResponseEntity.ok(service.replaceReview(request.isbn, request.toReview(reviewId)))
+    }
+
+    override fun updateReview(isbn: String, reviewId: UUID, request: UpdateReviewRequest): ResponseEntity<Unit> {
+        val review: Review = Review(
+            id = reviewId,
+            rating = request.rating,
+            comment = request.comment,
+        )
+        return ResponseEntity.ok(service.updateReview(isbn, reviewId, review))
     }
 
     override fun deleteReview(isbn:String, reviewId: UUID): ResponseEntity<Unit> {

@@ -20,6 +20,7 @@ import pt.unl.fct.iadi.bookstore.controller.dto.GetBookResponse
 import pt.unl.fct.iadi.bookstore.controller.dto.PartialUpdateRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.ReplaceReviewRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.ReviewResponse
+import pt.unl.fct.iadi.bookstore.controller.dto.UpdateReviewRequest
 import pt.unl.fct.iadi.bookstore.domain.Book
 import pt.unl.fct.iadi.bookstore.service.AlreadyExists
 import pt.unl.fct.iadi.bookstore.service.BookNotFoundException
@@ -211,11 +212,33 @@ interface BookstoreAPI {
         consumes = ["application/json"],
         method = [RequestMethod.PUT]
     )
-    fun replaceReview(@PathVariable reviewId: UUID, @Valid @RequestBody request: ReplaceReviewRequest): ResponseEntity<Unit>
+    fun replaceReview(@PathVariable isbn: String, @PathVariable reviewId: UUID, @Valid @RequestBody request: ReplaceReviewRequest): ResponseEntity<Unit>
 
 
     //#####################################################
 
+
+    @Operation(summary = "Update a review", operationId = "updateReview")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "Review updated",
+            headers = [Header(
+                name = "Location", description = "URI of the replaced review",
+                schema = Schema(type = "string", format = "uri")
+            )],
+            content = [Content(schema = Schema(hidden = true))]),
+
+        ApiResponse(responseCode = "400", description = "Validation error",
+            content = [Content(schema = Schema(implementation = MethodArgumentNotValidException::class))]),
+
+        ApiResponse(responseCode = "404", description = "There is no such review/book",
+            content = [Content(schema = Schema(implementation = ReviewNotFoundException::class))])
+    )
+    @RequestMapping(
+        value = ["/books/{isbn}/reviews/{reviewId}"],
+        consumes = ["application/json"],
+        method = [RequestMethod.PATCH]
+    )
+    fun updateReview(@PathVariable isbn: String, @PathVariable reviewId: UUID, @Valid @RequestBody request: UpdateReviewRequest): ResponseEntity<Unit>
 
     @Operation(summary = "Delete a review", operationId = "DeleteReview")
     @ApiResponses(

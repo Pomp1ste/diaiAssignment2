@@ -79,6 +79,22 @@ class BookstoreService {
         throw ReviewNotFoundException
     }
 
+    fun updateReview(isbn: String, reviewId: UUID, review: Review) {
+        val listrev: MutableList<Review> = reviews[isbn] ?: throw BookNotFoundException
+        for (i in listrev.indices) {
+            if (listrev[i].id == reviewId) {
+                var rev = listrev[i]
+                rev = Review(
+                    id = rev.id,
+                    rating = rev.rating,
+                    comment = rev.comment
+                )
+                return
+            }
+        }
+        throw ReviewNotFoundException
+    }
+
     fun deleteReview(@NotBlank revId: UUID) {
         val isbn = idToIsbn[revId.toString()]
         val bookReviews: MutableList<Review> = reviews[isbn] ?: throw BookNotFoundException
