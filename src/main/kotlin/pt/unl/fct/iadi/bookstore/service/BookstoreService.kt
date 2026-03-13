@@ -83,11 +83,10 @@ class BookstoreService {
         val listrev: MutableList<Review> = reviews[isbn] ?: throw BookNotFoundException
         for (i in listrev.indices) {
             if (listrev[i].id == reviewId) {
-                var rev = listrev[i]
-                rev = Review(
-                    id = rev.id,
-                    rating = rev.rating,
-                    comment = rev.comment
+                listrev[i] = Review(
+                    id = listrev[i].id,
+                    rating = listrev[i].rating,
+                    comment = listrev[i].comment
                 )
                 return
             }
