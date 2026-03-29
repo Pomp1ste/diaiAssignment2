@@ -1,8 +1,11 @@
 package pt.unl.fct.iadi.bookstore.controller
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.servlet.http.HttpServletRequest
 import org.apache.coyote.Response
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.PostMapping
 import pt.unl.fct.iadi.bookstore.controller.dto.CreateBookRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.GetBookResponse
 import pt.unl.fct.iadi.bookstore.domain.Book
@@ -23,6 +26,8 @@ class BookstoreController(
     private val httpRequest: HttpServletRequest
 ): BookstoreAPI {
 
+    @SecurityRequirement(name="apiToken")
+    @SecurityRequirement(name="basicAuth")
     override fun createBook(request: CreateBookRequest): ResponseEntity<Unit> {
 
         val requestId = httpRequest.getHeader("X-Request-Id")
@@ -46,6 +51,7 @@ class BookstoreController(
         return ResponseEntity.ok(GetBookResponse.fromBook(service.getBook(isbn)))
     }
 
+    @PreAuthorize("@service.isAuthor(#isbn, authentication.name)")
     override fun putBook(isbn: String, request: CreateBookRequest): ResponseEntity<Unit> {
         val (book, created) = service.putBook(isbn = isbn, book =request.toBook())
         val requestId = httpRequest.getHeader("X-Request-Id")
@@ -62,10 +68,12 @@ class BookstoreController(
         }
     }
 
+    @PreAuthorize("@service.isAuthor(#isbn, authentication.name)")
     override fun updateBook(isbn: String, request: PartialUpdateRequest): ResponseEntity<Unit> {
         return ResponseEntity.ok(service.updateBook(isbn = isbn, request))
     }
 
+    @PreAuthorize("@service.isAuthor(#isbn, authentication.name) or hasRole('ADMIN')")
     override fun deleteBook(isbn: String): ResponseEntity<Unit> {
         return ResponseEntity.ok(service.deleteBook(isbn))
     }
@@ -103,6 +111,7 @@ class BookstoreController(
             id = reviewId,
             rating = request.rating,
             comment = request.comment,
+            author = ""
         )
         return ResponseEntity.ok(service.updateReview(isbn, reviewId, review))
     }

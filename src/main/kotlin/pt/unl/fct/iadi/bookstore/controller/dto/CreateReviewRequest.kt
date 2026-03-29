@@ -21,14 +21,17 @@ data class CreateReviewRequest(
 
     @field:Schema(description = "comment")
     @field:Size(max = 500)
-    val comment: String
+    val comment: String,
+
+    @field:Schema(description = "Author of the book")
+    val author: String
 ) {
     fun toReview(): Review {
         val review = Review(
             rating = rating,
             comment = comment,
-            id = UUID.randomUUID()
-
+            id = UUID.randomUUID(),
+            author = author
         )
         return review
     }

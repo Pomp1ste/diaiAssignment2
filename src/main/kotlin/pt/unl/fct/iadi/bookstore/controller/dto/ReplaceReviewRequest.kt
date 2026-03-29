@@ -15,7 +15,7 @@ data class ReplaceReviewRequest(
     val isbn: String,
 
     @field:Schema(description = "comment")
-    val comment: String
+    val comment: String,
 
 ) {
     fun toReview(id: UUID): Review { return Review(id =  id, rating = rating, comment = comment) }

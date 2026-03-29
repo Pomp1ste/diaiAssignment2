@@ -2,6 +2,7 @@ package pt.unl.fct.iadi.bookstore.service
 
 import jakarta.validation.constraints.NotBlank
 import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import pt.unl.fct.iadi.bookstore.controller.dto.GetBookResponse
 import pt.unl.fct.iadi.bookstore.controller.dto.PartialUpdateRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.ReviewResponse
@@ -10,11 +11,16 @@ import pt.unl.fct.iadi.bookstore.domain.Review
 import java.util.UUID
 
 
-@Component
+@Service
 class BookstoreService {
     private var books: MutableMap<String, Book> = mutableMapOf()
     private var reviews: MutableMap<String, MutableList<Review>> = mutableMapOf()
     private var idToIsbn: MutableMap<String, String> = mutableMapOf()
+
+    fun isAuthor(isbn: String, authorName: String) : Boolean {
+        val book: Book = getBook(isbn)
+        return authorName == book.author
+    }
 
     fun listBooks(): List<GetBookResponse> = books.values.toList().map { GetBookResponse.fromBook(it) }
 
@@ -72,6 +78,7 @@ class BookstoreService {
         val bookReviews: MutableList<Review> = reviews[isbn] ?: throw BookNotFoundException
         for (i in bookReviews.indices) {
             if (bookReviews[i].id == review.id) {
+                review.author = bookReviews[i].author
                 bookReviews[i] = review
                 return
             }
@@ -85,8 +92,9 @@ class BookstoreService {
             if (listrev[i].id == reviewId) {
                 listrev[i] = Review(
                     id = listrev[i].id,
-                    rating = listrev[i].rating,
-                    comment = listrev[i].comment
+                    rating = review.rating ?: listrev[i].rating,
+                    comment = listrev[i].comment,
+                    author = listrev[i].author
                 )
                 return
             }

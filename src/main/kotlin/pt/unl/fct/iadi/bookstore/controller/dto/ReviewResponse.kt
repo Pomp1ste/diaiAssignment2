@@ -8,9 +8,12 @@ data class ReviewResponse(
     val rating: Int,
 
     @field:Schema(description = "Comment")
-    val comment: String
+    val comment: String? = null,
+
+    @field:Schema(description = "Author of review")
+    val author: String
 ) {
     companion object {
-        fun fromReview(review: Review): ReviewResponse = ReviewResponse(rating = review.rating, comment = review.comment)
+        fun fromReview(review: Review): ReviewResponse = ReviewResponse(rating = review.rating!!, comment = review.comment, author = review.author!!)
         }
     }
