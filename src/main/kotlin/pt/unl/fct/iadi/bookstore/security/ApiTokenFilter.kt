@@ -19,23 +19,12 @@ class ApiTokenFilter(private val registry: ApiTokenRegistry) : OncePerRequestFil
     ) {
         val token = request.getHeader("X-Api-Token")
 
-        if (!token.isNullOrBlank() && SecurityContextHolder.getContext().authentication == null) {
-            val appName = registry.tokenToApp[token]
-
-            if (appName == null) {
-                response.status = HttpServletResponse.SC_UNAUTHORIZED
-                response.setHeader(HttpHeaders.WWW_AUTHENTICATE, "ApiToken")
-                return
-            }
-
-            val auth = UsernamePasswordAuthenticationToken(
-                appName,
-                null,
-                listOf(SimpleGrantedAuthority("ROLE_EDITOR")),
-            )
-            SecurityContextHolder.getContext().authentication = auth
+        if (token.isNullOrBlank() || registry.tokenToApp[token] == null) {
+            response.status = HttpServletResponse.SC_UNAUTHORIZED
+            response.contentType = "application/json"
+            response.writer.write("""{"error":"UNAUTHORIZED","message":"..."}""")
+return
         }
-
         filterChain.doFilter(request, response)
     }
 }

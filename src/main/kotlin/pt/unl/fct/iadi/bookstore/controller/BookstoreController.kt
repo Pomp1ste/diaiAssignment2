@@ -43,14 +43,17 @@ class BookstoreController(
             .build()
     }
 
+    @SecurityRequirement(name="apiToken")
     override fun listBooks(): ResponseEntity<List<GetBookResponse>> {
         return ResponseEntity.ok(service.listBooks())
     }
 
+    @SecurityRequirement(name="apiToken")
     override fun getBook(isbn: String): ResponseEntity<GetBookResponse> {
         return ResponseEntity.ok(GetBookResponse.fromBook(service.getBook(isbn)))
     }
 
+    @SecurityRequirement(name="apiToken")
     @PreAuthorize("@service.isAuthor(#isbn, authentication.name)")
     override fun putBook(isbn: String, request: CreateBookRequest): ResponseEntity<Unit> {
         val (book, created) = service.putBook(isbn = isbn, book =request.toBook())
@@ -68,20 +71,24 @@ class BookstoreController(
         }
     }
 
+    @SecurityRequirement(name="apiToken")
     @PreAuthorize("@service.isAuthor(#isbn, authentication.name)")
     override fun updateBook(isbn: String, request: PartialUpdateRequest): ResponseEntity<Unit> {
         return ResponseEntity.ok(service.updateBook(isbn = isbn, request))
     }
 
+    @SecurityRequirement(name="apiToken")
     @PreAuthorize("@service.isAuthor(#isbn, authentication.name) or hasRole('ADMIN')")
     override fun deleteBook(isbn: String): ResponseEntity<Unit> {
         return ResponseEntity.ok(service.deleteBook(isbn))
     }
 
+    @SecurityRequirement(name="apiToken")
     override fun listReviews(isbn: String): ResponseEntity<List<ReviewResponse>> {
         return ResponseEntity.ok(service.listReviews(isbn))
     }
 
+    @SecurityRequirement(name="apiToken")
     override fun createReview(isbn: String, request: CreateReviewRequest): ResponseEntity<Unit> {
 
         val requestId = httpRequest.getHeader("X-Request-Id")
@@ -98,6 +105,7 @@ class BookstoreController(
             .build()
     }
 
+    @SecurityRequirement(name="apiToken")
     override fun replaceReview(
         isbn: String,
         reviewId: UUID,
@@ -106,6 +114,7 @@ class BookstoreController(
         return ResponseEntity.ok(service.replaceReview(request.isbn, request.toReview(reviewId)))
     }
 
+    @SecurityRequirement(name="apiToken")
     override fun updateReview(isbn: String, reviewId: UUID, request: UpdateReviewRequest): ResponseEntity<Unit> {
         val review: Review = Review(
             id = reviewId,
@@ -116,6 +125,7 @@ class BookstoreController(
         return ResponseEntity.ok(service.updateReview(isbn, reviewId, review))
     }
 
+    @SecurityRequirement(name="apiToken")
     override fun deleteReview(isbn:String, reviewId: UUID): ResponseEntity<Unit> {
         return ResponseEntity.ok(service.deleteReview(reviewId))
     }

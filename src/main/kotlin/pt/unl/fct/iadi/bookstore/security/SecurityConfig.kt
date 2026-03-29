@@ -62,11 +62,10 @@ class SecurityConfig(private val apiTokenFilter: ApiTokenFilter) {
                 UsernamePasswordAuthenticationFilter::class.java)
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers(HttpMethod.GET, "/posts", "/posts/**").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/posts").hasRole("EDITOR")
-                    .requestMatchers(HttpMethod.PUT, "/posts/**").hasRole("EDITOR")
-                    .requestMatchers(HttpMethod.DELETE, "/posts/**").hasRole("ADMIN")
-                    .anyRequest().authenticated()
+                    .requestMatchers(HttpMethod.POST, "/books/*", "/books/*/reviews/*").authenticated()
+                    .requestMatchers(HttpMethod.PUT, "/books/*", "/books/*/reviews/*").authenticated()
+                    .requestMatchers(HttpMethod.DELETE, "/books/*", "/books/*/reviews/*").authenticated()
+                    .anyRequest().permitAll()
             }
             .httpBasic {}
         return http.build()
