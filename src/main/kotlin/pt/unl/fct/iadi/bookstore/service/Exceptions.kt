@@ -1,14 +1,8 @@
 package pt.unl.fct.iadi.bookstore.service
 
 
-object BookNotFoundException : RuntimeException("Book not found") {
-    private fun readResolve(): Any = BookNotFoundException
-}
+class BookNotFoundException : RuntimeException("Book not found")
 
-object AlreadyExists : RuntimeException("Book already exists") {
-    private fun readResolve(): Any = AlreadyExists
-}
+class AlreadyExists : RuntimeException("Book already exists")
 
-object ReviewNotFoundException : RuntimeException("Review not found") {
-    private fun readResolve(): Any = ReviewNotFoundException
-}
+class ReviewNotFoundException : RuntimeException("Review not found")

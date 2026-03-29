@@ -62,10 +62,12 @@ class SecurityConfig(private val apiTokenFilter: ApiTokenFilter) {
                 UsernamePasswordAuthenticationFilter::class.java)
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers(HttpMethod.POST, "/books/*", "/books/*/reviews/*").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/books", "/books/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/books", "/books/*/reviews").authenticated()
                     .requestMatchers(HttpMethod.PUT, "/books/*", "/books/*/reviews/*").authenticated()
+                    .requestMatchers(HttpMethod.PATCH, "/books/*", "/books/*/reviews/*").authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/books/*", "/books/*/reviews/*").authenticated()
-                    .anyRequest().permitAll()
+                    .anyRequest().authenticated()
             }
             .httpBasic {}
         return http.build()

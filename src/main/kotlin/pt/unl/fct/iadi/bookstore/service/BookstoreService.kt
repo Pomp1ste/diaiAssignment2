@@ -29,13 +29,13 @@ class BookstoreService {
             return books[isbn]!!
         }
         else {
-            throw BookNotFoundException
+            throw BookNotFoundException()
         }
     }
 
     fun createBook(book: Book): Book {
         if (books.containsKey(book.isbn)) {
-            throw AlreadyExists
+            throw AlreadyExists()
         }
         else {
             books[book.isbn] = book
@@ -50,7 +50,7 @@ class BookstoreService {
     }
 
     fun updateBook(isbn: String, updateRequest: PartialUpdateRequest) {
-        val existing = books[isbn] ?: throw BookNotFoundException
+        val existing = books[isbn] ?: throw BookNotFoundException()
         books[isbn] = existing.copy(
             author = updateRequest.author ?: existing.author,
             title = updateRequest.title ?: existing.title,
@@ -60,22 +60,22 @@ class BookstoreService {
     }
 
     fun deleteBook(@NotBlank isbn: String) {
-        val result = books.remove(isbn) ?: throw BookNotFoundException
+        val result = books.remove(isbn) ?: throw BookNotFoundException()
         reviews.remove(result.isbn)
     }
 
     fun createReview(isbn: String, review: Review) {
-        if (!books.containsKey(isbn)) throw BookNotFoundException
+        if (!books.containsKey(isbn)) throw BookNotFoundException()
         reviews.getOrPut(isbn) { mutableListOf() }.add(review)
         idToIsbn[review.id.toString()] = isbn
     }
 
     fun listReviews(isbn: String): List<ReviewResponse> =
-        reviews[isbn]?.map { ReviewResponse.fromReview(it) } ?: throw ReviewNotFoundException
+        reviews[isbn]?.map { ReviewResponse.fromReview(it) } ?: throw ReviewNotFoundException()
 
     fun replaceReview(isbn: String, @NotBlank review: Review) {
         val isbn = idToIsbn[review.id.toString()]
-        val bookReviews: MutableList<Review> = reviews[isbn] ?: throw BookNotFoundException
+        val bookReviews: MutableList<Review> = reviews[isbn] ?: throw BookNotFoundException()
         for (i in bookReviews.indices) {
             if (bookReviews[i].id == review.id) {
                 review.author = bookReviews[i].author
@@ -83,11 +83,11 @@ class BookstoreService {
                 return
             }
         }
-        throw ReviewNotFoundException
+        throw ReviewNotFoundException()
     }
 
     fun updateReview(isbn: String, reviewId: UUID, review: Review) {
-        val listrev: MutableList<Review> = reviews[isbn] ?: throw BookNotFoundException
+        val listrev: MutableList<Review> = reviews[isbn] ?: throw BookNotFoundException()
         for (i in listrev.indices) {
             if (listrev[i].id == reviewId) {
                 listrev[i] = Review(
@@ -99,18 +99,18 @@ class BookstoreService {
                 return
             }
         }
-        throw ReviewNotFoundException
+        throw ReviewNotFoundException()
     }
 
     fun deleteReview(@NotBlank revId: UUID) {
         val isbn = idToIsbn[revId.toString()]
-        val bookReviews: MutableList<Review> = reviews[isbn] ?: throw BookNotFoundException
+        val bookReviews: MutableList<Review> = reviews[isbn] ?: throw BookNotFoundException()
         for (i in bookReviews.indices) {
             if (bookReviews[i].id == revId) {
                 bookReviews.remove(bookReviews[i])
                 return
             }
         }
-        throw ReviewNotFoundException
+        throw ReviewNotFoundException()
     }
 }
