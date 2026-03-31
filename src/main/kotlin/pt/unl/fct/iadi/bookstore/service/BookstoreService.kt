@@ -1,6 +1,7 @@
 package pt.unl.fct.iadi.bookstore.service
 
 import jakarta.validation.constraints.NotBlank
+import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import pt.unl.fct.iadi.bookstore.controller.dto.GetBookResponse
@@ -16,6 +17,7 @@ class BookstoreService {
     private var books: MutableMap<String, Book> = mutableMapOf()
     private var reviews: MutableMap<String, MutableList<Review>> = mutableMapOf()
     private var idToIsbn: MutableMap<String, String> = mutableMapOf()
+
 
     fun isAuthor(isbn: String, authorName: String) : Boolean {
         val book: Book = getBook(isbn)
@@ -59,9 +61,9 @@ class BookstoreService {
         )
     }
 
-    fun deleteBook(@NotBlank isbn: String) {
-        val result = books.remove(isbn) ?: throw BookNotFoundException()
-        reviews.remove(result.isbn)
+    fun deleteBook(isbn: String) {
+        books.remove(isbn) ?: throw BookNotFoundException()
+        reviews.remove(isbn)
     }
 
     fun createReview(isbn: String, review: Review) {

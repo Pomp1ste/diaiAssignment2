@@ -23,7 +23,7 @@ class ApiTokenFilter(private val registry: ApiTokenRegistry) : OncePerRequestFil
             response.status = HttpServletResponse.SC_UNAUTHORIZED
             response.contentType = "application/json"
             response.writer.write("""{"error":"UNAUTHORIZED","message":"..."}""")
-return
+            return
         }
         filterChain.doFilter(request, response)
     }

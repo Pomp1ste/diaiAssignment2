@@ -7,10 +7,6 @@ data class UpdateReviewRequest (
     @field:Schema(description = "rating given")
     val rating: Int,
 
-    @field:Schema(description = "isbn of the book related")
-    @field:NotBlank
-    val isbn: String,
-
     @field:Schema(description = "comment")
     val comment: String
 )

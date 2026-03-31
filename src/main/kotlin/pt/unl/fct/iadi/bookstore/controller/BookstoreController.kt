@@ -54,7 +54,7 @@ class BookstoreController(
     }
 
     @SecurityRequirement(name="apiToken")
-    @PreAuthorize("@service.isAuthor(#isbn, authentication.name)")
+    @PreAuthorize("@bookstoreService.isAuthor(#isbn, authentication.name)")
     override fun putBook(isbn: String, request: CreateBookRequest): ResponseEntity<Unit> {
         val (book, created) = service.putBook(isbn = isbn, book =request.toBook())
         val requestId = httpRequest.getHeader("X-Request-Id")
@@ -72,15 +72,18 @@ class BookstoreController(
     }
 
     @SecurityRequirement(name="apiToken")
-    @PreAuthorize("@service.isAuthor(#isbn, authentication.name)")
+    @PreAuthorize("@bookstoreService.isAuthor(#isbn, authentication.name)")
     override fun updateBook(isbn: String, request: PartialUpdateRequest): ResponseEntity<Unit> {
-        return ResponseEntity.ok(service.updateBook(isbn = isbn, request))
+        service.updateBook(isbn = isbn, request)
+        return ResponseEntity.ok().build()
     }
 
     @SecurityRequirement(name="apiToken")
-    @PreAuthorize("@service.isAuthor(#isbn, authentication.name) or hasRole('ADMIN')")
+    @PreAuthorize("@bookstoreService.isAuthor(#isbn, authentication.name) or hasRole('ADMIN')")
     override fun deleteBook(isbn: String): ResponseEntity<Unit> {
-        return ResponseEntity.ok(service.deleteBook(isbn))
+        service.deleteBook(isbn)
+        print("Deleted \n")
+        return ResponseEntity.noContent().build()
     }
 
     @SecurityRequirement(name="apiToken")

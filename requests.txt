@@ -1,0 +1,23 @@
+curl -X POST --location "http://localhost:8080/books" \
+-H "Content-Type: application/json" \
+-H "X-Api-Token: token-web-ghi789" \
+-d '{
+      "isbn": "azerty",
+      "title": "titre",
+      "author": "moi",
+      "price": 10,
+      "image": "https://"
+    }' \
+-u admin:adminpass
+
+
+
+curl -X GET --location "http://localhost:8080/books" \
+-H "Content-Type: application/json" \
+-H "X-Api-Token: token-web-ghi789" \
+-u admin:adminpass
+
+curl -X DELETE --location "http://localhost:8080/books/azerty" \
+-H "Content-Type: application/json" \
+-H "X-Api-Token: token-web-ghi789" \
+-u admin:adminpass

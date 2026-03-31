@@ -10,7 +10,7 @@ import pt.unl.fct.iadi.bookstore.domain.Book
 data class CreateBookRequest (
     @field:NotBlank
     @field:Schema(description = "unique ISBN")
-    val isbn: String,
+    var isbn: String,
 
     @field:NotBlank
     @field:Size(min = 1, max = 120)
