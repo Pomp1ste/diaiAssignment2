@@ -22,7 +22,7 @@ class ApiTokenFilter(private val registry: ApiTokenRegistry) : OncePerRequestFil
         if (token.isNullOrBlank() || registry.tokenToApp[token] == null) {
             response.status = HttpServletResponse.SC_UNAUTHORIZED
             response.contentType = "application/json"
-            response.writer.write("""{"error":"UNAUTHORIZED","message":"..."}""")
+            response.writer.write("""{"error":"UNAUTHORIZED","message":"Missing or invalid X-Api-Token"}""")
             return
         }
         filterChain.doFilter(request, response)

@@ -72,14 +72,13 @@ class BookstoreController(
     }
 
     @SecurityRequirement(name="apiToken")
-    @PreAuthorize("@bookstoreService.isAuthor(#isbn, authentication.name)")
     override fun updateBook(isbn: String, request: PartialUpdateRequest): ResponseEntity<Unit> {
         service.updateBook(isbn = isbn, request)
         return ResponseEntity.ok().build()
     }
 
     @SecurityRequirement(name="apiToken")
-    @PreAuthorize("@bookstoreService.isAuthor(#isbn, authentication.name) or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     override fun deleteBook(isbn: String): ResponseEntity<Unit> {
         service.deleteBook(isbn)
         print("Deleted \n")
@@ -108,6 +107,7 @@ class BookstoreController(
             .build()
     }
 
+    @PreAuthorize("@bookstoreService.isAuthor(#isbn, #reviewId, authentication.name)")
     @SecurityRequirement(name="apiToken")
     override fun replaceReview(
         isbn: String,
@@ -117,6 +117,7 @@ class BookstoreController(
         return ResponseEntity.ok(service.replaceReview(request.isbn, request.toReview(reviewId)))
     }
 
+    @PreAuthorize("@bookstoreService.isAuthor(#isbn, #reviewId, authentication.name)")
     @SecurityRequirement(name="apiToken")
     override fun updateReview(isbn: String, reviewId: UUID, request: UpdateReviewRequest): ResponseEntity<Unit> {
         val review: Review = Review(
@@ -128,6 +129,7 @@ class BookstoreController(
         return ResponseEntity.ok(service.updateReview(isbn, reviewId, review))
     }
 
+    @PreAuthorize("@bookstoreService.isAuthor(#isbn, #reviewId, authentication.name) or hasRole('ADMIN')")
     @SecurityRequirement(name="apiToken")
     override fun deleteReview(isbn:String, reviewId: UUID): ResponseEntity<Unit> {
         return ResponseEntity.ok(service.deleteReview(reviewId))

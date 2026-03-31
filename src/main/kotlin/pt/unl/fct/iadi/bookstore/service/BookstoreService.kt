@@ -19,20 +19,20 @@ class BookstoreService {
     private var idToIsbn: MutableMap<String, String> = mutableMapOf()
 
 
-    fun isAuthor(isbn: String, authorName: String) : Boolean {
-        val book: Book = getBook(isbn)
-        return authorName == book.author
+    fun isAuthor(isbn: String, reviewId: UUID, authorName: String) : Boolean {
+        val reviews = reviews[isbn] ?: return false
+        for (review in reviews) {
+            if (review.id == reviewId) {
+                if (authorName == review.author) return true
+            }
+        }
+        return false
     }
 
     fun listBooks(): List<GetBookResponse> = books.values.toList().map { GetBookResponse.fromBook(it) }
 
     fun getBook(@NotBlank isbn: String): Book {
-        if (books.containsKey(isbn)) {
-            return books[isbn]!!
-        }
-        else {
-            throw BookNotFoundException()
-        }
+        return books[isbn] ?: throw BookNotFoundException()
     }
 
     fun createBook(book: Book): Book {

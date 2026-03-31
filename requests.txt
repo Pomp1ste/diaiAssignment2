@@ -21,3 +21,31 @@ curl -X DELETE --location "http://localhost:8080/books/azerty" \
 -H "Content-Type: application/json" \
 -H "X-Api-Token: token-web-ghi789" \
 -u admin:adminpass
+
+
+curl -X POST --location "http://localhost:8080/books/197/reviews" \
+-H "Content-Type: application/json" \
+-H "X-Api-Token: token-web-ghi789" \
+-d '{
+      "isbn": "197",
+      "rating": 5,
+      "comment": "rien",
+      "author": "editor1"
+    }' \
+-u admin:adminpass
+
+
+curl -X GET --location "http://localhost:8080/books/197/reviews" \
+-H "Content-Type: application/json" \
+-H "X-Api-Token: token-web-ghi789" \
+-u admin:adminpass
+
+curl -X PUT --location "http://localhost:8080/books/197/reviews/dec8624f-18c2-4b56-81a8-ac3a1cf8208d" \
+-H "Content-Type: application/json" \
+-H "X-Api-Token: token-web-ghi789" \
+-d '{
+      "rating": 2,
+      "isbn": "197",
+      "comment": "non plus"
+    }' \
+-u editor2:editor2pass
