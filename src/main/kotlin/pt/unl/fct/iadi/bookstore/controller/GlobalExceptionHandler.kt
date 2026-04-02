@@ -27,19 +27,19 @@ class GlobalExceptionHandler(private val messageSource: MessageSource) {
 
     @ExceptionHandler(BookNotFoundException::class)
     fun handleBookNotFound(ex: BookNotFoundException, locale: Locale): ResponseEntity<ErrorResponse> {
-        val message = messageSource.getMessage("error.book.notfound", null, locale)
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse("NOT_FOUND", message))
+        val message = messageSource.getMessage("error.book.notfound", null, "Book not found", locale)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse("NOT_FOUND", message!!))
     }
 
     @ExceptionHandler(ReviewNotFoundException::class)
     fun handleReviewNotFound(ex: ReviewNotFoundException, locale: Locale): ResponseEntity<ErrorResponse> {
-        val message = messageSource.getMessage("error.review.notfound", null, locale)
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse("NOT_FOUND", message))
+        val message = messageSource.getMessage("error.review.notfound", null, "Review not found", locale)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse("NOT_FOUND", message!!))
     }
 
     @ExceptionHandler(AlreadyExists::class)
     fun handleAlreadyExists(ex: AlreadyExists, locale: Locale): ResponseEntity<ErrorResponse> {
-        val message = messageSource.getMessage("error.alreadyExists", null, locale)
-        return ResponseEntity.status(409).body(ErrorResponse("CONFLICT", message))
+        val message = messageSource.getMessage("error.alreadyExists", null, "Book already exists", locale)
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResponse("CONFLICT", message!!))
     }
 }
