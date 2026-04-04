@@ -54,7 +54,6 @@ class BookstoreController(
     }
 
     @SecurityRequirement(name="apiToken")
-    @PreAuthorize("@bookstoreService.isAuthor(#isbn, authentication.name)")
     override fun putBook(isbn: String, request: CreateBookRequest): ResponseEntity<Unit> {
         val (book, created) = service.putBook(isbn = isbn, book =request.toBook())
         val requestId = httpRequest.getHeader("X-Request-Id")
@@ -96,7 +95,7 @@ class BookstoreController(
         val requestId = httpRequest.getHeader("X-Request-Id")
         println("Incoming requestId: $requestId")
         val rev = request.toReview()
-        service.createReview(isbn = request.isbn, review = rev)
+        service.createReview(isbn = isbn, review = rev)
         val location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
             .buildAndExpand(rev.id)

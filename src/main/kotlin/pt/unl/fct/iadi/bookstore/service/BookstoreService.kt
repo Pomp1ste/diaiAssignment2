@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
+import pt.unl.fct.iadi.bookstore.controller.dto.CreateBookRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.GetBookResponse
 import pt.unl.fct.iadi.bookstore.controller.dto.PartialUpdateRequest
 import pt.unl.fct.iadi.bookstore.controller.dto.ReviewResponse
@@ -53,12 +54,16 @@ class BookstoreService {
 
     fun updateBook(isbn: String, updateRequest: PartialUpdateRequest) {
         val existing = books[isbn] ?: throw BookNotFoundException()
-        books[isbn] = existing.copy(
-            author = updateRequest.author ?: existing.author,
+
+        val new: Book = CreateBookRequest(
+            isbn = isbn,
             title = updateRequest.title ?: existing.title,
             price = updateRequest.price ?: existing.price,
-            image = updateRequest.image ?: existing.image
-        )
+            image = updateRequest.image ?: existing.image,
+            author = updateRequest.author ?: existing.author
+        ).toBook()
+
+        books[isbn] = new
     }
 
     fun deleteBook(isbn: String) {
@@ -73,7 +78,10 @@ class BookstoreService {
     }
 
     fun listReviews(isbn: String): List<ReviewResponse> =
-        reviews[isbn]?.map { ReviewResponse.fromReview(it) } ?: throw ReviewNotFoundException()
+        if (books[isbn] == null) {throw BookNotFoundException()}
+        else {
+            reviews[isbn]?.map { ReviewResponse.fromReview(it) } ?: emptyList()
+        }
 
     fun replaceReview(isbn: String, @NotBlank review: Review) {
         val isbn = idToIsbn[review.id.toString()]

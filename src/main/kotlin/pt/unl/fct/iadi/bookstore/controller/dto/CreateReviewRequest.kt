@@ -10,9 +10,6 @@ import pt.unl.fct.iadi.bookstore.domain.Review
 import java.util.UUID
 
 data class CreateReviewRequest(
-    @field:Schema(description = "unique ISBN")
-    @field:NotBlank
-    val isbn: String,
 
     @field:Schema(description = "rating given")
     @field:Min(1)
