@@ -52,7 +52,7 @@ class BookstoreService {
         return Pair(book, created)
     }
 
-    fun updateBook(isbn: String, updateRequest: PartialUpdateRequest) {
+    fun updateBook(isbn: String, updateRequest: PartialUpdateRequest): Book {
         val existing = books[isbn] ?: throw BookNotFoundException()
 
         val new: Book = CreateBookRequest(
@@ -64,6 +64,7 @@ class BookstoreService {
         ).toBook()
 
         books[isbn] = new
+        return new
     }
 
     fun deleteBook(isbn: String) {

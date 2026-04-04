@@ -104,7 +104,7 @@ interface BookstoreAPI {
         consumes = ["application/json"],
         method = [RequestMethod.PUT]
     )
-    fun putBook(@PathVariable isbn: String, @Valid @RequestBody request: CreateBookRequest): ResponseEntity<Unit>
+    fun putBook(@PathVariable isbn: String, @Valid @RequestBody request: CreateBookRequest): ResponseEntity<Any>
 
 
     //#####################################################
@@ -127,7 +127,7 @@ interface BookstoreAPI {
         consumes = ["application/json"],
         method = [RequestMethod.PATCH]
     )
-    fun updateBook(@PathVariable isbn: String, @Valid @RequestBody request: PartialUpdateRequest): ResponseEntity<Unit>
+    fun updateBook(@PathVariable isbn: String, @Valid @RequestBody request: PartialUpdateRequest): ResponseEntity<GetBookResponse>
 
     //#####################################################
 

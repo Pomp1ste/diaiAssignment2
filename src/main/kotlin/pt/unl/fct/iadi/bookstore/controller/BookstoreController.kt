@@ -54,7 +54,7 @@ class BookstoreController(
     }
 
     @SecurityRequirement(name="apiToken")
-    override fun putBook(isbn: String, request: CreateBookRequest): ResponseEntity<Unit> {
+    override fun putBook(isbn: String, request: CreateBookRequest): ResponseEntity<Any> {
         val (book, created) = service.putBook(isbn = isbn, book =request.toBook())
         val requestId = httpRequest.getHeader("X-Request-Id")
         return if (created) {
@@ -66,14 +66,14 @@ class BookstoreController(
                 .header("X-Request-Id", requestId ?: "")
                 .build()
         } else {
-            ResponseEntity.ok().build()
+            ResponseEntity.ok(GetBookResponse.fromBook(book))
         }
     }
 
     @SecurityRequirement(name="apiToken")
-    override fun updateBook(isbn: String, request: PartialUpdateRequest): ResponseEntity<Unit> {
-        service.updateBook(isbn = isbn, request)
-        return ResponseEntity.ok().build()
+    override fun updateBook(isbn: String, request: PartialUpdateRequest): ResponseEntity<GetBookResponse> {
+        val book =  service.updateBook(isbn = isbn, request)
+        return ResponseEntity.ok(GetBookResponse.fromBook(book))
     }
 
     @SecurityRequirement(name="apiToken")
