@@ -37,6 +37,7 @@ class GlobalExceptionHandler(private val messageSource: MessageSource) {
         val message = messageSource.getMessage("error.book.notfound", null, "Book not found", locale)
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .headers(languageHeaders(locale))
+
             .body(ErrorResponse("NOT_FOUND", message!!))
     }
 
